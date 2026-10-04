@@ -1,0 +1,30 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const modules = import.meta.glob('../../content/blog/*.md', { eager: true });
+const posts = Object.entries(modules)
+  .map(([path, mod]) => ({ slug: path.split('/').pop().replace('.md',''), ...mod.frontmatter }))
+  .filter((p) => !p.draft)
+  .sort((a,b) => new Date(b.date) - new Date(a.date));
+---
+<BlogLayout title="Insights & Articles | Mohammad Fatemi" description="Articles by Mohammad Fatemi on business strategy, investor relations, Web3 ecosystems, partnerships, blockchain and sustainable growth." canonical="https://mohfatemi.com/blog/">
+  <section class="blog-hero section-dark">
+    <div class="container blog-hero-inner reveal-up">
+      <p class="eyebrow"><span></span> Insights & Articles</p>
+      <h1>Strategy, growth and Web3 perspectives.</h1>
+      <p>Practical thinking across business architecture, partnerships, investor relations and emerging technology.</p>
+    </div>
+  </section>
+  <section class="section section-light">
+    <div class="container blog-grid">
+      {posts.map((post) => <article class="blog-card reveal-up">
+        {post.image && <a href={`/blog/${post.slug}/`} class="blog-card-image"><img src={post.image} alt={post.imageAlt || post.title} loading="lazy" /></a>}
+        <div class="blog-card-body">
+          <p class="card-label">{post.category || 'Insights'}</p>
+          <h2><a href={`/blog/${post.slug}/`}>{post.title}</a></h2>
+          <p>{post.description}</p>
+          <div class="blog-meta"><time datetime={post.date}>{new Date(post.date).toLocaleDateString('en-AE',{year:'numeric',month:'short',day:'numeric'})}</time><span>•</span><span>{post.readingTime || '5 min read'}</span></div>
+        </div>
+      </article>)}
+    </div>
+  </section>
+</BlogLayout>

@@ -1,0 +1,17 @@
+{
+  "name": "mohfatemi-secure-static-cms",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "prebuild": "node scripts/build-static-pages.mjs",
+    "dev": "node scripts/build-static-pages.mjs && astro dev",
+    "build": "astro build && node scripts/postbuild.mjs",
+    "preview": "astro preview",
+    "seo:check": "node scripts/check-seo.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.12",
+    "astro": "^5.16.0"
+  }
+}

@@ -1,0 +1,30 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+export async function getStaticPaths() {
+  const modules = import.meta.glob('../../content/blog/*.md', { eager: true });
+  return Object.entries(modules)
+    .filter(([,mod]) => !mod.frontmatter.draft)
+    .map(([path,mod]) => ({ params:{ slug:path.split('/').pop().replace('.md','') }, props:{ post:mod } }));
+}
+const { post } = Astro.props;
+const fm = post.frontmatter;
+const Content = post.Content;
+const canonical = fm.canonical || `https://mohfatemi.com/blog/${Astro.params.slug}/`;
+---
+<BlogLayout title={fm.seoTitle || fm.title} description={fm.seoDescription || fm.description} canonical={canonical} ogTitle={fm.ogTitle || fm.seoTitle || fm.title} ogDescription={fm.ogDescription || fm.seoDescription || fm.description} ogImage={fm.ogImage || fm.image || '/assets/mohammad-fatemi-og.webp'} noindex={fm.noindex} type="article" published={fm.date} updated={fm.updated} tags={fm.tags || []}>
+  <article class="article-shell">
+    <header class="article-header section-dark">
+      <div class="container article-header-inner reveal-up">
+        <p class="eyebrow"><span></span>{fm.category || 'Insights'}</p>
+        <h1>{fm.title}</h1>
+        <p class="article-deck">{fm.description}</p>
+        <div class="blog-meta"><time datetime={fm.date}>{new Date(fm.date).toLocaleDateString('en-AE',{year:'numeric',month:'long',day:'numeric'})}</time>{fm.updated && <><span>•</span><span>Updated {new Date(fm.updated).toLocaleDateString('en-AE',{year:'numeric',month:'short',day:'numeric'})}</span></>}</div>
+      </div>
+    </header>
+    {fm.image && <div class="container article-feature"><img src={fm.image} alt={fm.imageAlt || fm.title} width="1400" height="788" /></div>}
+    <div class="container article-layout">
+      <div class="article-content"><Content /></div>
+      <aside class="article-sidebar"><div class="article-side-card"><strong>Explore more</strong><a href="/">Mohammad Fatemi profile</a><a href="/ecosystem.html">RZ & Web3 consulting</a><a href="/blog/">All insights</a></div></aside>
+    </div>
+  </article>
+</BlogLayout>

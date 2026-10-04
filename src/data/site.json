@@ -1,0 +1,43 @@
+{
+  "siteName": "Mohammad Fatemi",
+  "siteUrl": "https://mohfatemi.com",
+  "author": "Mohammad Fatemi",
+  "whatsapp": "971561000991",
+  "linkedin": "https://www.linkedin.com/in/mohammad-fatemi-938a8835/",
+  "instagram": "https://www.instagram.com/m.fatemisadabad",
+  "facebook": "https://www.facebook.com/",
+  "tiktok": "https://www.tiktok.com/",
+  "x": "https://x.com/",
+  "home": {
+    "seoTitle": "Mohammad Fatemi | Strategic Business Architect & Web3 Ecosystem Builder",
+    "metaDescription": "Official portfolio of Mohammad Fatemi, Dubai strategic business architect, Web3 ecosystem builder, investor-relations advisor and multi-sector co-founder.",
+    "canonical": "https://mohfatemi.com/",
+    "ogTitle": "Mohammad Fatemi | Strategic Business Architect & Web3 Ecosystem Builder",
+    "ogDescription": "Building strategies, connecting opportunities and creating value across business growth, investor relations, blockchain and Web3 ecosystems.",
+    "ogImage": "https://mohfatemi.com/assets/mohammad-fatemi-og.webp",
+    "noindex": false
+  },
+  "ecosystem": {
+    "seoTitle": "RZ & Web3 Consulting | Mohammad Fatemi",
+    "metaDescription": "RZ ecosystem consulting, blockchain strategy, token utility, investor relations and AI-enabled Web3 advisory by Mohammad Fatemi in Dubai.",
+    "canonical": "https://mohfatemi.com/ecosystem.html",
+    "ogTitle": "RZ & Web3 Consulting | Mohammad Fatemi",
+    "ogDescription": "Strategic consulting across blockchain, Web3, token ecosystems, investor communication and AI-enabled platforms.",
+    "ogImage": "https://mohfatemi.com/assets/mohammad-fatemi-og.webp",
+    "noindex": false
+  },
+  "integrations": {
+    "googleSiteVerification": "",
+    "googleTagManagerId": "GTM-K33TZDCG",
+    "googleAnalyticsId": "",
+    "googleAdsId": "",
+    "googleAdsWhatsAppConversionLabel": "",
+    "facebookDomainVerification": "",
+    "metaPixelId": "",
+    "recaptchaSiteKey": "",
+    "linkedinPartnerId": "",
+    "youtubeVideoId": "",
+    "googleMapsEmbedUrl": ""
+  },
+  "youtube": ""
+}

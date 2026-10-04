@@ -1,0 +1,97 @@
+media:
+  input: public/assets/uploads
+  output: /assets/uploads
+
+content:
+  - name: blog
+    label: Blog Posts
+    type: collection
+    path: src/content/blog
+    filename: "{fields.slug}.md"
+    view:
+      fields: [title, date, category, draft]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - { name: title, label: Post Title, type: string, required: true }
+      - { name: slug, label: URL Slug, type: string, required: true, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+      - { name: description, label: Excerpt, type: text, required: true }
+      - { name: date, label: Publish Date, type: date, required: true }
+      - { name: updated, label: Updated Date, type: date, required: false }
+      - { name: author, label: Author, type: string, default: "Mohammad Fatemi" }
+      - { name: category, label: Category, type: string, required: true }
+      - { name: tags, label: Tags, type: string, list: true, required: false }
+      - { name: image, label: Featured Image, type: image, required: false }
+      - { name: imageAlt, label: Featured Image Alt Text, type: string, required: false }
+      - { name: readingTime, label: Reading Time, type: string, default: "5 min read" }
+      - { name: body, label: Article Content, type: rich-text, required: true }
+      - name: seoTitle
+        label: SEO Title
+        type: string
+        description: "Recommended: about 50–60 characters."
+      - name: seoDescription
+        label: Meta Description
+        type: text
+        description: "Recommended: about 120–160 characters."
+      - { name: canonical, label: Canonical URL, type: string, required: false }
+      - { name: ogTitle, label: Social Title, type: string, required: false }
+      - { name: ogDescription, label: Social Description, type: text, required: false }
+      - { name: ogImage, label: Social Share Image, type: image, required: false }
+      - { name: noindex, label: Hide from Search Engines, type: boolean, default: false }
+      - { name: draft, label: Draft, type: boolean, default: true }
+
+  - name: site-settings
+    label: Site & SEO Settings
+    type: file
+    path: src/data/site.json
+    fields:
+      - { name: siteName, label: Site Name, type: string }
+      - { name: siteUrl, label: Website URL, type: string }
+      - { name: author, label: Author, type: string }
+      - { name: whatsapp, label: WhatsApp Number, type: string }
+      - { name: linkedin, label: LinkedIn URL, type: string }
+      - { name: instagram, label: Instagram URL, type: string }
+      - { name: facebook, label: Facebook URL, type: string }
+      - { name: tiktok, label: TikTok URL, type: string }
+      - { name: x, label: X URL, type: string }
+      - { name: youtube, label: YouTube URL, type: string, required: false }
+      - name: integrations
+        label: Analytics, Ads & Embeds
+        type: object
+        fields:
+          - { name: googleSiteVerification, label: Google Search Console Verification Code, type: string, required: false }
+          - { name: googleTagManagerId, label: Google Tag Manager Container ID, type: string, required: false, description: "Example: GTM-XXXXXXX. Your current container is prefilled." }
+          - { name: googleAnalyticsId, label: Google Analytics 4 Measurement ID, type: string, required: false, description: "Example: G-XXXXXXXXXX. Leave blank if GA4 is managed inside Google Tag Manager." }
+          - { name: googleAdsId, label: Google Ads ID, type: string, required: false, description: "Example: AW-123456789. Leave blank if Google Ads tags are managed inside Google Tag Manager." }
+          - { name: googleAdsWhatsAppConversionLabel, label: Google Ads WhatsApp Conversion Label, type: string, required: false, description: "Optional. When set, WhatsApp clicks fire a Google Ads conversion using the Google Ads ID above." }
+          - { name: facebookDomainVerification, label: Facebook Domain Verification Code, type: string, required: false }
+          - { name: metaPixelId, label: Meta Pixel ID, type: string, required: false, description: "Leave blank if Meta Pixel is managed through Google Tag Manager." }
+          - { name: recaptchaSiteKey, label: Google reCAPTCHA v3 Site Key, type: string, required: false, description: "Optional client-side integration. Any real form submission must also verify the token server-side." }
+          - { name: linkedinPartnerId, label: LinkedIn Insight Tag Partner ID, type: string, required: false }
+          - { name: youtubeVideoId, label: Featured YouTube Video ID, type: string, required: false, description: "Optional. Example: dQw4w9WgXcQ. Adds a privacy-enhanced YouTube embed section." }
+          - { name: googleMapsEmbedUrl, label: Google Maps Embed URL, type: string, required: false, description: "Optional. Paste the full Google Maps iframe src URL to show a map section." }
+      - name: home
+        label: Home Page SEO
+        type: object
+        fields:
+          - { name: seoTitle, label: SEO Title, type: string }
+          - { name: metaDescription, label: Meta Description, type: text }
+          - { name: canonical, label: Canonical URL, type: string }
+          - { name: ogTitle, label: Social Title, type: string }
+          - { name: ogDescription, label: Social Description, type: text }
+          - { name: ogImage, label: Social Image URL, type: string }
+          - { name: noindex, label: Noindex, type: boolean, default: false }
+      - name: ecosystem
+        label: Ecosystem Page SEO
+        type: object
+        fields:
+          - { name: seoTitle, label: SEO Title, type: string }
+          - { name: metaDescription, label: Meta Description, type: text }
+          - { name: canonical, label: Canonical URL, type: string }
+          - { name: ogTitle, label: Social Title, type: string }
+          - { name: ogDescription, label: Social Description, type: text }
+          - { name: ogImage, label: Social Image URL, type: string }
+          - { name: noindex, label: Noindex, type: boolean, default: false }

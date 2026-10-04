@@ -1,0 +1,91 @@
+---
+import site from '../data/site.json';
+const {
+  title,
+  description,
+  canonical,
+  ogTitle = title,
+  ogDescription = description,
+  ogImage = '/assets/mohammad-fatemi-og.webp',
+  noindex = false,
+  type = 'website',
+  published,
+  updated,
+  tags = []
+} = Astro.props;
+const absolute = (u) => u.startsWith('http') ? u : new URL(u, site.siteUrl).href;
+const url = canonical || new URL(Astro.url.pathname, site.siteUrl).href;
+const jsonLd = type === 'article' ? {
+  '@context':'https://schema.org', '@type':'BlogPosting', headline:title, description,
+  image:absolute(ogImage), datePublished:published, dateModified:updated || published,
+  author:{'@type':'Person',name:site.author,url:site.siteUrl},
+  publisher:{'@type':'Person',name:site.author,url:site.siteUrl},
+  mainEntityOfPage:url, keywords:tags.join(', ')
+} : {
+  '@context':'https://schema.org','@type':'WebPage',name:title,description,url
+};
+---
+<!doctype html>
+<html lang="en-AE">
+<head>
+  {site.integrations?.googleTagManagerId && <script src="/gtm-init.js" data-gtm-id={site.integrations.googleTagManagerId}></script>}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
+  {site.integrations?.googleSiteVerification && <meta name="google-site-verification" content={site.integrations.googleSiteVerification} />}
+  {site.integrations?.facebookDomainVerification && <meta name="facebook-domain-verification" content={site.integrations.facebookDomainVerification} />}
+  <link rel="canonical" href={url} />
+  <meta property="og:type" content={type === 'article' ? 'article' : 'website'} />
+  <meta property="og:site_name" content={site.siteName} />
+  <meta property="og:title" content={ogTitle} />
+  <meta property="og:description" content={ogDescription} />
+  <meta property="og:url" content={url} />
+  <meta property="og:image" content={absolute(ogImage)} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={ogTitle} />
+  <meta name="twitter:description" content={ogDescription} />
+  <meta name="twitter:image" content={absolute(ogImage)} />
+  <link rel="icon" type="image/webp" href="/assets/icon-64.webp" />
+  <link rel="alternate" type="application/rss+xml" title={`${site.siteName} RSS`} href="/rss.xml" />
+  <link rel="stylesheet" href="/styles.css" />
+  {(site.integrations?.googleAnalyticsId || site.integrations?.googleAdsId) && <script async src={`https://www.googletagmanager.com/gtag/js?id=${site.integrations.googleAnalyticsId || site.integrations.googleAdsId}`}></script>}
+  {site.integrations?.googleAnalyticsId && <script src="/analytics-init.js" data-ga-id={site.integrations.googleAnalyticsId} defer></script>}
+  {site.integrations?.googleAdsId && <script src="/google-ads-init.js" data-google-ads-id={site.integrations.googleAdsId} data-whatsapp-label={site.integrations.googleAdsWhatsAppConversionLabel || ''} defer></script>}
+  {site.integrations?.metaPixelId && <script src="/meta-pixel-init.js" data-pixel-id={site.integrations.metaPixelId} defer></script>}
+  {site.integrations?.linkedinPartnerId && <script src="/linkedin-init.js" data-partner-id={site.integrations.linkedinPartnerId} defer></script>}
+  {site.integrations?.recaptchaSiteKey && <script src="/recaptcha-init.js" data-site-key={site.integrations.recaptchaSiteKey} defer></script>}
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</head>
+<body class="blog-page">
+  {site.integrations?.googleTagManagerId && <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${site.integrations.googleTagManagerId}`} height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>}
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+  <header class="site-header" data-header>
+    <div class="container nav-shell">
+      <a class="brand brand-with-logo" href="/" aria-label="Mohammad Fatemi home">
+        <span class="brand-mark brand-logo"><img src="/assets/fatemi-logo-transparent.webp" width="965" height="660" alt="Fatemi logo" decoding="async" /></span>
+        <span class="brand-copy"><strong>Mohammad Fatemi</strong><small>Strategic Business Architect</small></span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Open navigation"><span></span><span></span><span></span></button>
+      <nav id="primary-navigation" class="primary-nav" aria-label="Primary navigation">
+        <a href="/#about">About</a><a href="/#ventures">Ventures</a><a href="/#expertise">Expertise</a><a href="/ecosystem.html">RZ & Web3</a><a class="active" href="/blog/">Insights</a><a class="nav-cta magnetic" href="/#contact">Start a Conversation</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main-content"><slot /></main>
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div><a class="brand brand-with-logo footer-brand" href="/"><span class="brand-mark brand-logo"><img src="/assets/fatemi-logo-transparent.webp" width="965" height="660" alt="Fatemi logo" /></span><span class="brand-copy"><strong>Mohammad Fatemi</strong><small>Strategy • Web3 • Growth</small></span></a><p>Building strategies. Connecting opportunities. Creating value in Web3 and beyond.</p></div>
+      <div><h2 class="footer-heading">Explore</h2><a href="/#about">About Mohammad</a><a href="/#ventures">Business Ventures</a><a href="/ecosystem.html">RZ & Web3 Consulting</a><a href="/blog/">Insights & Articles</a></div>
+      <div><h2 class="footer-heading">Connect</h2><a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener noreferrer">WhatsApp</a><a href={site.linkedin} target="_blank" rel="noopener noreferrer me">LinkedIn</a><div class="social-links" aria-label="Social media profiles">{site.instagram && <a href={site.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><span class="brand-icon brand-icon-instagram" aria-hidden="true"></span></a>}{site.tiktok && <a href={site.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok"><span class="brand-icon brand-icon-tiktok" aria-hidden="true"></span></a>}{site.facebook && <a href={site.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><span class="brand-icon brand-icon-facebook" aria-hidden="true"></span></a>}{site.linkedin && <a href={site.linkedin} target="_blank" rel="noopener noreferrer me" aria-label="LinkedIn"><span class="brand-icon brand-icon-linkedin" aria-hidden="true"></span></a>}{site.x && <a href={site.x} target="_blank" rel="noopener noreferrer" aria-label="X"><span class="brand-icon brand-icon-x" aria-hidden="true"></span></a>}{site.youtube && <a href={site.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><span class="brand-icon brand-icon-youtube" aria-hidden="true"></span></a>}</div></div>
+    </div>
+    <div class="container footer-bottom"><p>© <span id="current-year">2026</span> Mohammad Fatemi. All rights reserved.</p><p>Business and digital-asset content is informational and not investment advice.</p></div>
+  </footer>
+  <a class="whatsapp-float" href={`https://wa.me/${site.whatsapp}?text=Hello%20Mohammad%2C%20I%20would%20like%20to%20discuss%20a%20business%20opportunity.`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><span class="brand-icon brand-icon-whatsapp" aria-hidden="true"></span><span>WhatsApp</span></a>
+  {site.integrations?.metaPixelId && <noscript><img height="1" width="1" style="display:none" alt="" src={`https://www.facebook.com/tr?id=${site.integrations.metaPixelId}&ev=PageView&noscript=1`} /></noscript>}
+  {site.integrations?.linkedinPartnerId && <noscript><img height="1" width="1" style="display:none" alt="" src={`https://px.ads.linkedin.com/collect/?pid=${site.integrations.linkedinPartnerId}&fmt=gif`} /></noscript>}
+  <script src="/script.js" defer></script>
+</body>
+</html>

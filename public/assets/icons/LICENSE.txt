@@ -1,0 +1,4 @@
+Brand SVG icons in this folder are from Font Awesome Free 6.7.2.
+Font Awesome Free icons are licensed under CC BY 4.0.
+https://fontawesome.com/license/free
+Copyright 2024 Fonticons, Inc.
