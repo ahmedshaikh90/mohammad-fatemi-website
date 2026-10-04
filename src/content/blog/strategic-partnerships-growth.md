@@ -5,11 +5,11 @@ date: "2026-09-22"
 author: "Mohammad Fatemi"
 category: "Business Growth"
 tags: ["Strategic Partnerships", "Business Growth", "Investor Relations"]
-image: "/assets/mohammad-fatemi-about.webp"
+image: "/assets/mohammad-fatemi-portrait.webp"
 imageAlt: "Mohammad Fatemi executive business portrait"
 seoTitle: "Strategic Partnerships for Sustainable Growth | Mohammad Fatemi"
 seoDescription: "Explore how strategic partnerships can strengthen market access, credibility, execution and sustainable business growth."
-ogImage: "/assets/mohammad-fatemi-about.webp"
+ogImage: "/assets/mohammad-fatemi-portrait.webp"
 canonical: "https://mohfatemi.com/blog/strategic-partnerships-growth/"
 noindex: false
 draft: false
