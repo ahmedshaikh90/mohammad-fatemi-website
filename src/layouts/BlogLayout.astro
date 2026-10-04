@@ -49,7 +49,7 @@ const jsonLd = type === 'article' ? {
   <meta name="twitter:image" content={absolute(ogImage)} />
   <link rel="icon" type="image/webp" href="/assets/icon-64.webp" />
   <link rel="alternate" type="application/rss+xml" title={`${site.siteName} RSS`} href="/rss.xml" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/styles.css?v=20261004-2" />
   {(site.integrations?.googleAnalyticsId || site.integrations?.googleAdsId) && <script async src={`https://www.googletagmanager.com/gtag/js?id=${site.integrations.googleAnalyticsId || site.integrations.googleAdsId}`}></script>}
   {site.integrations?.googleAnalyticsId && <script src="/analytics-init.js" data-ga-id={site.integrations.googleAnalyticsId} defer></script>}
   {site.integrations?.googleAdsId && <script src="/google-ads-init.js" data-google-ads-id={site.integrations.googleAdsId} data-whatsapp-label={site.integrations.googleAdsWhatsAppConversionLabel || ''} defer></script>}
