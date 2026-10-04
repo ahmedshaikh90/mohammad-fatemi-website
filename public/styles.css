@@ -363,24 +363,28 @@ h3 { font-size: clamp(1.25rem, 2vw, 1.65rem); }
 
 .rz-teaser { color: var(--white); background: linear-gradient(180deg, #060a10, #0a1320); }
 .rz-card { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; min-height: 650px; padding: clamp(2rem, 6vw, 5.5rem); overflow: hidden; border: 1px solid rgba(214,179,106,.28); border-radius: 42px; background: radial-gradient(circle at 20% 50%, rgba(196,154,80,.17), transparent 35%), linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.01)); box-shadow: 0 50px 120px rgba(0,0,0,.4); }
-.rz-visual { position: relative; min-height: 440px; display: grid; place-items: center; }
+.rz-visual { position: relative; min-height: 440px; display: grid; place-items: center; width: min(100%, 420px); margin-inline: auto; isolation: isolate; }
 .token-core { position: relative; z-index: 5; display: grid; place-items: center; width: 130px; aspect-ratio: 1; color: var(--black); border-radius: 50%; background: linear-gradient(135deg, var(--gold-light), var(--gold)); font-weight: 900; letter-spacing: .08em; box-shadow: 0 0 70px rgba(196,154,80,.3); }
 .token-orbit { position: absolute; inset: 50%; width: var(--size); aspect-ratio: 1; margin: calc(var(--size) / -2); border: 1px solid rgba(214,179,106,.24); border-radius: 50%; animation: orbitSpin var(--speed) linear infinite; }
 .token-orbit > span,
 .token-orbit > a { position: absolute; top: 50%; left: 100%; display: grid; place-items: center; min-width: 74px; min-height: 42px; padding: .55rem .65rem; color: var(--gold-light); border: 1px solid rgba(214,179,106,.3); border-radius: 999px; background: rgba(7,13,22,.92); transform: translate(-50%,-50%); font-size: .67rem; font-weight: 900; letter-spacing: .05em; animation: orbitSpin var(--speed) linear infinite reverse; }
-.orbit-token { width: 82px; height: 82px; padding: .35rem !important; overflow: hidden; background: radial-gradient(circle at 35% 30%, rgba(214,179,106,.16), rgba(4,8,13,.96) 70%) !important; box-shadow: 0 0 28px rgba(196,154,80,.12); transition: border-color var(--transition), box-shadow var(--transition); }
+.orbit-token { width: 72px; height: 72px; min-width: 72px !important; min-height: 72px !important; padding: .28rem !important; overflow: hidden; border-radius: 50% !important; background: radial-gradient(circle at 35% 30%, rgba(214,179,106,.16), rgba(4,8,13,.96) 70%) !important; box-shadow: 0 0 28px rgba(196,154,80,.12); transition: border-color var(--transition), box-shadow var(--transition); }
 .orbit-token:hover { border-color: var(--gold-light); box-shadow: 0 0 38px rgba(214,179,106,.25); }
-.orbit-token img { width: 100%; height: 100%; object-fit: contain; border-radius: inherit; }
+.orbit-token img { width: 78%; height: 78%; object-fit: contain; border-radius: 50%; }
 .rz-orbit-logo { backdrop-filter: blur(6px); }
 .rz-orbit-logo img { width: 78%; height: 78%; object-fit: contain; }
 .orbit-token-insurance { width: 118px; height: 64px; border-radius: 18px !important; padding: .55rem !important; }
 .token-logo-fallback { display: none; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--gold-light); font-size: .7rem; font-weight: 900; letter-spacing: .06em; text-align: center; }
 .token-logo-load-failed > img { display: none !important; }
 .token-logo-load-failed > .token-logo-fallback { display: flex; }
-.orbit-a { --size: 240px; --speed: 14s; }
-.orbit-b { --size: 340px; --speed: 20s; animation-direction: reverse; }
+.orbit-a { --size: 170px; --speed: 14s; }
+.orbit-b { --size: 250px; --speed: 20s; animation-direction: reverse; }
 .orbit-b > span, .orbit-b > a { animation-direction: normal; }
-.orbit-c { --size: 430px; --speed: 27s; }
+.orbit-c { --size: 330px; --speed: 27s; }
+.rz-orbit-core { width: 132px; height: 132px; padding: 18px 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; text-align: center; box-sizing: border-box; overflow: hidden; }
+.rz-orbit-core span { display:block; font-size:1rem; font-weight:950; line-height:1; }
+.rz-orbit-core strong { display:block; font-size:.86rem; letter-spacing:.08em; line-height:1; }
+.rz-orbit-core small { display:block; max-width:100%; font-size:.48rem; letter-spacing:.08em; line-height:1; white-space:nowrap; }
 @keyframes orbitSpin { to { transform: rotate(360deg); } }
 .rz-copy h2 { margin-bottom: 1.3rem; }
 .rz-copy > p { color: var(--silver-2); }
@@ -956,10 +960,11 @@ h3 { font-size: clamp(1.25rem, 2vw, 1.65rem); }
 
 @media (max-width: 920px) {
   .rz-card { grid-template-columns: 1fr; }
-  .rz-visual { min-height: 360px; }
-  .orbit-a { --size: 190px; }
-  .orbit-b { --size: 270px; }
-  .orbit-c { --size: 340px; }
+  .rz-visual { min-height: 350px; width: min(100%, 350px); }
+  .orbit-a { --size: 150px; }
+  .orbit-b { --size: 215px; }
+  .orbit-c { --size: 280px; }
+  .rz-orbit-core { width: 120px; height: 120px; }
   .ecosystem-constellation { width: min(520px, 100%); min-height: 470px; margin-inline: auto; }
   .subhero { display: block; padding-top: 8.5rem; }
   .subhero-inner { max-width: none; }
@@ -979,12 +984,16 @@ h3 { font-size: clamp(1.25rem, 2vw, 1.65rem); }
 }
 
 @media (max-width: 600px) {
-  .rz-visual { min-height: 320px; }
-  .orbit-a { --size: 160px; }
-  .orbit-b { --size: 220px; }
-  .orbit-c { --size: 285px; }
-  .orbit-token { width: 68px; height: 68px; }
-  .orbit-token-insurance { width: 94px; height: 54px; }
+  .rz-visual { min-height: 290px; width: min(100%, 290px); }
+  .orbit-a { --size: 130px; }
+  .orbit-b { --size: 180px; }
+  .orbit-c { --size: 230px; }
+  .orbit-token { width: 54px; height: 54px; min-width: 54px !important; min-height: 54px !important; }
+  .orbit-token-insurance { width: 90px; height: 52px; }
+  .rz-orbit-core { width: 108px; height: 108px; padding: 14px 10px; gap: 6px; }
+  .rz-orbit-core span { font-size: .92rem; }
+  .rz-orbit-core strong { font-size: .76rem; }
+  .rz-orbit-core small { font-size: .43rem; }
   .ecosystem-constellation { min-height: 390px; transform: none; }
   .ecosystem-node-media { width: 72px; height: 72px; }
   .ecosystem-node-media-wide { width: 112px; height: 66px; }
