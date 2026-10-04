@@ -15,6 +15,7 @@ concurrency:
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,25 +34,63 @@ jobs:
       - name: Build static website
         run: npm run build
 
-      - name: Configure SSH
+      - name: Configure SiteGround SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SITEGROUND_SSH_PRIVATE_KEY }}
+          SSH_PASSPHRASE: ${{ secrets.SITEGROUND_SSH_PASSPHRASE }}
           SSH_HOST: ${{ secrets.SITEGROUND_SSH_HOST }}
           SSH_PORT: ${{ secrets.SITEGROUND_SSH_PORT }}
+          SSH_USER: ${{ secrets.SITEGROUND_SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.SITEGROUND_DEPLOY_PATH }}
         run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
+          set -e
 
-      - name: Deploy dist to SiteGround
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/siteground_key
+          chmod 600 ~/.ssh/siteground_key
+
+          # Remove the passphrase only on this temporary GitHub runner.
+          # The original SiteGround key remains password protected.
+          ssh-keygen \
+            -p \
+            -P "$SSH_PASSPHRASE" \
+            -N "" \
+            -f ~/.ssh/siteground_key
+
+          ssh-keyscan -H -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+          # Confirm that GitHub can connect to SiteGround.
+          ssh \
+            -i ~/.ssh/siteground_key \
+            -p "$SSH_PORT" \
+            "$SSH_USER@$SSH_HOST" \
+            "echo 'SiteGround SSH connection successful'"
+
+          # Confirm that the deployment directory actually exists.
+          ssh \
+            -i ~/.ssh/siteground_key \
+            -p "$SSH_PORT" \
+            "$SSH_USER@$SSH_HOST" \
+            "test -d '$DEPLOY_PATH' && echo 'Deployment directory confirmed: $DEPLOY_PATH'"
+
+      - name: Deploy website to SiteGround
         env:
           SSH_HOST: ${{ secrets.SITEGROUND_SSH_HOST }}
           SSH_PORT: ${{ secrets.SITEGROUND_SSH_PORT }}
           SSH_USER: ${{ secrets.SITEGROUND_SSH_USER }}
           DEPLOY_PATH: ${{ secrets.SITEGROUND_DEPLOY_PATH }}
         run: |
+          set -e
+
           rsync -az --delete \
             --exclude '.well-known/' \
-            -e "ssh -i ~/.ssh/id_ed25519 -p $SSH_PORT" \
+            --exclude 'php_errorlog' \
+            -e "ssh -i ~/.ssh/siteground_key -p $SSH_PORT" \
             dist/ "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/"
+
+      - name: Deployment complete
+        run: |
+          echo "mohfatemi.com deployment completed successfully."
