@@ -51,7 +51,6 @@ function enforceEmailOnlyContact(html) {
     `<a href="mailto:${esc(contactEmail)}">${esc(contactEmail)}</a>`
   );
 
-  // Keep LinkedIn available as a social profile, but make email the only direct contact method.
   html = html.replace(
     /<a[^>]*href=["'][^"']*linkedin\.com[^"']*["'][^>]*>LinkedIn<\/a>/gi,
     ''
@@ -89,9 +88,9 @@ async function cleanContactAssets() {
   try {
     let css = await fs.readFile(stylesPath, 'utf8');
     css = css
-      .replace(/\n?\.whatsapp-float[^\n]*\n/g, '\n')
-      .replace(/\n?@keyframes whatsappPulse[^\n]*\n/g, '\n')
-      .replace(/\n?\.brand-icon-whatsapp[^\n]*\n/g, '\n');
+      .replace(/\n?\s*\.whatsapp-float[^\n]*\n/g, '\n')
+      .replace(/\n?\s*@keyframes whatsappPulse[^\n]*\n/g, '\n')
+      .replace(/\n?\s*\.brand-icon-whatsapp[^\n]*\n/g, '\n');
     await fs.writeFile(stylesPath, css);
   } catch {}
 
@@ -129,7 +128,6 @@ const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.s
 await fs.writeFile(path.join(dist, 'sitemap.xml'), xml);
 await fs.writeFile(path.join(dist, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${site.siteUrl.replace(/\/$/, '')}/sitemap.xml\n`);
 
-// Deployment safety: no WhatsApp links, controls or labels should remain in public output.
 const publicTextFiles = (await walk(dist)).filter((f) => /\.(?:html|js|css|json|xml|txt)$/i.test(f));
 for (const f of publicTextFiles) {
   const text = await fs.readFile(f, 'utf8');
