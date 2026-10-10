@@ -19,7 +19,7 @@ function integrationHead() {
   const directGoogleId = i.googleAnalyticsId || i.googleAdsId;
   if (directGoogleId) tags.push(`<script async src="https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(directGoogleId)}"></script>`);
   if (i.googleAnalyticsId) tags.push(`<script src="/analytics-init.js" data-ga-id="${esc(i.googleAnalyticsId)}" defer></script>`);
-  if (i.googleAdsId) tags.push(`<script src="/google-ads-init.js" data-google-ads-id="${esc(i.googleAdsId)}" data-whatsapp-label="${esc(i.googleAdsWhatsAppConversionLabel || '')}" defer></script>`);
+  if (i.googleAdsId) tags.push(`<script src="/google-ads-init.js" data-google-ads-id="${esc(i.googleAdsId)}" defer></script>`);
   if (i.metaPixelId) tags.push(`<script src="/meta-pixel-init.js" data-pixel-id="${esc(i.metaPixelId)}" defer></script>`);
   if (i.linkedinPartnerId) tags.push(`<script src="/linkedin-init.js" data-partner-id="${esc(i.linkedinPartnerId)}" defer></script>`);
   if (i.recaptchaSiteKey) tags.push(`<script src="/recaptcha-init.js" data-site-key="${esc(i.recaptchaSiteKey)}" defer></script>`);
@@ -72,7 +72,33 @@ function socialLinksMarkup() {
 
 function replaceSocialLinks(html) {
   html = html.replace(/<div class="social-links" aria-label="Social media profiles">[\s\S]*?<\/div>/g, socialLinksMarkup());
-  html = html.replace(/(<a class="whatsapp-float"[^>]*>)[\s\S]*?(<\/a>)/g, '$1<span class="brand-icon brand-icon-whatsapp" aria-hidden="true"></span><span>WhatsApp</span>$2');
+  return html;
+}
+
+function emailCard(subject = 'Strategic Enquiry from mohfatemi.com') {
+  const email = esc(site.contactEmail || 'contact@mohfatemi.com');
+  const encodedSubject = encodeURIComponent(subject);
+  return `<div class="contact-form reveal-up">
+          <p class="card-label">Direct Email</p>
+          <h3>Contact Mohammad Fatemi</h3>
+          <p>For strategic enquiries, partnerships, investor relations, Web3 consulting and business opportunities, please contact Mohammad directly by email.</p>
+          <a class="button button-gold magnetic" href="mailto:${email}?subject=${encodedSubject}">${email} <span aria-hidden="true">↗</span></a>
+        </div>`;
+}
+
+function enforceEmailOnlyContact(html, pageName) {
+  const email = esc(site.contactEmail || 'contact@mohfatemi.com');
+  const subject = pageName === 'ecosystem' ? 'Web3 Strategic Enquiry from mohfatemi.com' : 'Strategic Enquiry from mohfatemi.com';
+  html = html.replace(/<form class="contact-form reveal-up" id="whatsapp-form">[\s\S]*?<\/form>/gi, emailCard(subject));
+  html = html.replace(/<a class="whatsapp-float"[\s\S]*?<\/a>/gi, '');
+  html = html.replace(/<a[^>]*href="https:\/\/(?:wa\.me|api\.whatsapp\.com)\/[^\"]*"[^>]*>[\s\S]*?<\/a>/gi, `<a href="mailto:${email}">${email}</a>`);
+  html = html.replace(/<a[^>]*href="[^"]*linkedin\.com[^"]*"[^>]*>LinkedIn<\/a>/gi, '');
+  html = html
+    .replace(/through the website'?s WhatsApp inquiry button or his verified LinkedIn profile\./gi, `directly by email at ${email}.`)
+    .replace(/send a direct message through WhatsApp\./gi, `contact Mohammad directly at ${email}.`)
+    .replace(/The form opens a direct WhatsApp conversation\./gi, `Please contact Mohammad directly by email at ${email}.`)
+    .replace(/This form opens WhatsApp\.[^<]*/gi, `Please contact Mohammad directly at ${email}.`)
+    .replace(/This website works without JavaScript, but animations and the WhatsApp form enhancement require JavaScript\./gi, 'This website works without JavaScript; animations are enhanced when JavaScript is enabled.');
   return html;
 }
 
@@ -106,7 +132,6 @@ function metaReplace(html, cfg) {
   html = html.replace(/<meta name="twitter:description" content="[^"]*">/, `<meta name="twitter:description" content="${esc(cfg.ogDescription)}">`);
   html = html.replace(/<meta name="twitter:image" content="[^"]*">/, `<meta name="twitter:image" content="${esc(cfg.ogImage)}">`);
   html = html.replaceAll('https://mohfatemi.com', site.siteUrl.replace(/\/$/, ''));
-  html = html.replaceAll('971561000991', String(site.whatsapp).replace(/\D/g, ''));
   html = html.replaceAll('https://www.linkedin.com/in/mohammad-fatemi-938a8835/', site.linkedin || '#');
   html = html.replaceAll('https://www.instagram.com/', site.instagram || '#');
   html = html.replaceAll('https://www.facebook.com/', site.facebook || '#');
@@ -129,6 +154,7 @@ for (const [name, cfg] of [['index', site.home], ['ecosystem', site.ecosystem]])
   let html = await fs.readFile(path.join(root, `static-pages/${name}.template.html`), 'utf8');
   html = metaReplace(html, cfg);
   html = addBlogLinks(html);
+  html = enforceEmailOnlyContact(html, name);
   html = replaceSocialLinks(html);
   if (name === 'index') {
     const media = mediaEmbedsSection();
