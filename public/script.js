@@ -207,35 +207,6 @@
     });
   });
 
-  const whatsappForm = document.querySelector('#whatsapp-form');
-  if (whatsappForm) {
-    whatsappForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      if (!whatsappForm.reportValidity()) return;
-
-      const data = new FormData(whatsappForm);
-      const name = String(data.get('name') || '').trim();
-      const company = String(data.get('company') || '').trim();
-      const service = String(data.get('service') || '').trim();
-      const message = String(data.get('message') || '').trim();
-
-      const text = [
-        'Hello Mohammad,',
-        '',
-        `My name is ${name}.`,
-        company ? `Company: ${company}` : '',
-        `Area of interest: ${service}`,
-        '',
-        message,
-        '',
-        'I submitted this enquiry through mohfatemi.com.'
-      ].filter(Boolean).join('\n');
-
-      const url = `https://wa.me/971561000991?text=${encodeURIComponent(text)}`;
-      window.open(url, '_blank', 'noopener,noreferrer');
-    });
-  }
-
   // Keep official ecosystem cards usable if a remote logo host blocks hotlinking.
   document.querySelectorAll('img[data-token-logo]').forEach((image) => {
     const handleLogoError = () => {
