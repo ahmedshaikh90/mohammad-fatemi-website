@@ -57,6 +57,9 @@ function addMobileAssets(html) {
   if (!html.includes('mobile-fixes.css')) {
     html = html.replace('</head>', '  <link rel="stylesheet" href="mobile-fixes.css?v=20261031-mobile1">\n</head>');
   }
+  if (!html.includes('clean-redesign.css')) {
+    html = html.replace('</head>', '  <link rel="stylesheet" href="clean-redesign.css?v=20261031-clean1">\n</head>');
+  }
   html = html.replace(/<script src="script\.js(?:\?[^\"]*)?" defer><\/script>/i, '<script src="script.js?v=20261031-mobile1" defer></script>');
   return html;
 }
