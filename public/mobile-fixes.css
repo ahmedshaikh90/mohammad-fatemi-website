@@ -1,0 +1,251 @@
+/* Mobile usability refinements for mohfatemi.com */
+
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1090;
+  background: rgba(1, 4, 8, .68);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .28s ease, visibility .28s ease;
+}
+body.menu-open .nav-backdrop {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+@media (max-width: 1080px) {
+  .site-header { z-index: 1120; }
+  body.menu-open .site-header {
+    transform: none !important;
+    background: rgba(5, 8, 13, .94);
+    border-bottom: 1px solid rgba(214,179,106,.18);
+    backdrop-filter: blur(18px) saturate(120%);
+    -webkit-backdrop-filter: blur(18px) saturate(120%);
+  }
+
+  .primary-nav {
+    z-index: 1130;
+    top: 0;
+    bottom: 0;
+    width: min(86vw, 380px);
+    height: 100dvh;
+    justify-content: flex-start;
+    gap: .2rem;
+    padding: 6.7rem 1.4rem 2rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: -28px 0 70px rgba(0,0,0,.38);
+  }
+  .primary-nav > a {
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+    padding: .78rem .9rem;
+    border-radius: 12px;
+  }
+  .primary-nav > a:not(.nav-cta)::after { display: none; }
+  .primary-nav > a:not(.nav-cta):active,
+  .primary-nav > a:not(.nav-cta):focus-visible {
+    color: var(--gold-light);
+    background: rgba(214,179,106,.08);
+  }
+  .primary-nav .nav-cta {
+    justify-content: center;
+    min-height: 52px;
+    margin-top: .8rem;
+  }
+  .nav-toggle {
+    z-index: 1140;
+    flex: 0 0 auto;
+    touch-action: manipulation;
+  }
+  #network-canvas { pointer-events: none; }
+}
+
+@media (max-width: 820px) {
+  html { scroll-padding-top: 84px; }
+  body { overflow-wrap: anywhere; }
+  .container { width: min(calc(100% - 24px), var(--container)); }
+  .section { padding: 4.1rem 0; }
+  .site-header { padding: .65rem 0; background: rgba(5,8,13,.84); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+  .site-header.is-scrolled { padding: .55rem 0; }
+  .brand-logo { width: 74px; }
+  .brand-copy strong { font-size: .76rem; letter-spacing: .045em; }
+  .nav-toggle { width: 44px; height: 44px; }
+
+  /* Reduce expensive visual effects on touch screens. */
+  #network-canvas { display: none !important; }
+  .cursor-glow { display: none !important; }
+  .hero-grid { opacity: .09; }
+  .reveal-up, .reveal-scale { transition-duration: .5s; }
+  [data-tilt] { transform: none !important; }
+
+  /* Hero portrait: mobile crop rather than desktop image squeezed smaller. */
+  .hero { padding: 7.1rem 0 3.4rem; }
+  .hero-copy { padding: .6rem 0; }
+  .hero-visual { width: min(100%, 430px); margin-top: .6rem; }
+  .portrait-frame { border-radius: 24px 24px 62px 24px; }
+  .portrait-frame img {
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center 12%;
+  }
+  .portrait-caption { inset: auto 1rem .95rem; }
+  .floating-card {
+    min-width: 0;
+    max-width: 72%;
+    padding: .62rem .72rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: none;
+  }
+  .floating-card strong { font-size: .68rem; line-height: 1.25; }
+  .floating-card-top { top: 4%; right: 2%; }
+  .floating-card-bottom { bottom: 5%; left: 2%; }
+
+  /* Editorial and venture pictures receive dedicated mobile framing. */
+  .profile-editorial,
+  .ventures-hero-layout {
+    grid-template-columns: 1fr !important;
+    gap: 1.15rem !important;
+  }
+  .profile-editorial-primary,
+  .profile-editorial-copy,
+  .venture-intro-visual { border-radius: 22px; }
+  .profile-editorial-primary img {
+    aspect-ratio: 4 / 5;
+    max-height: 620px;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+  .venture-intro-visual {
+    width: 100%;
+    max-width: 560px;
+    justify-self: center;
+  }
+  .venture-intro-visual img {
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center 18%;
+  }
+  .profile-editorial-copy { padding: 1.35rem; }
+  .profile-editorial-primary figcaption,
+  .venture-intro-visual figcaption { padding: 1rem; }
+
+  /* Mobile token/orbit presentation: smoother circles, less movement and no overflow. */
+  .rz-card { overflow: hidden; }
+  .rz-visual {
+    width: min(100%, 340px) !important;
+    min-height: 340px !important;
+    margin-inline: auto;
+    transform: none !important;
+    overflow: visible;
+  }
+  .token-orbit { animation-timing-function: linear !important; }
+  .orbit-a { --size: 150px !important; --speed: 22s !important; }
+  .orbit-b { --size: 215px !important; --speed: 30s !important; }
+  .orbit-c { --size: 280px !important; --speed: 40s !important; }
+  .orbit-token {
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+    min-height: 58px !important;
+    will-change: transform;
+  }
+  .rz-orbit-core { width: 112px !important; height: 112px !important; }
+
+  .ecosystem-constellation {
+    width: min(100%, 390px) !important;
+    min-height: 400px !important;
+    margin-inline: auto;
+    overflow: hidden;
+  }
+  .ecosystem-ring-one { animation-duration: 28s !important; }
+  .ecosystem-ring-two { animation-duration: 38s !important; }
+  .ecosystem-ring-three { animation-duration: 50s !important; }
+  .ecosystem-node { animation: none !important; }
+
+  .subhero {
+    min-height: auto !important;
+    padding-top: 7.2rem !important;
+    padding-bottom: 3rem;
+  }
+  .subhero-logo-cluster {
+    width: min(100%, 360px) !important;
+    height: 320px !important;
+    margin: 1.8rem auto 0 !important;
+    overflow: hidden;
+  }
+  .hero-token-logo { animation: none !important; }
+  .hero-token-rz { top: 3% !important; right: 3% !important; }
+  .hero-token-mgc { top: 42% !important; left: 0 !important; }
+  .hero-token-insurance { right: 0 !important; bottom: 2% !important; }
+
+  .official-token-card { grid-template-rows: 165px 1fr; }
+  .token-logo-panel { min-height: 165px; padding: 1rem; }
+  .token-logo-panel img {
+    width: min(112px, 58%) !important;
+    height: 112px !important;
+    object-fit: contain;
+  }
+  .token-card-content { padding: 1.25rem; }
+
+  /* Avoid touch jank from desktop hover effects. */
+  .button:hover,
+  .compact-venture-card:hover,
+  .token-logo-panel:hover img,
+  .brand:hover .brand-logo img { transform: none; }
+}
+
+@media (max-width: 560px) {
+  .section { padding: 3.5rem 0; }
+  .hero h1 { font-size: clamp(2.25rem, 11vw, 3.25rem); }
+  .hero-lead { margin-top: 1.2rem; font-size: 1rem; }
+  .hero-actions { margin-top: 1.4rem; }
+  .button { min-height: 50px; padding: .78rem 1rem; }
+  .hero-tags { margin-top: 1.35rem; }
+
+  .profile-editorial-primary img,
+  .venture-intro-visual img { aspect-ratio: 3 / 4; }
+  .profile-editorial-primary figcaption span,
+  .venture-intro-visual figcaption span { font-size: .78rem; line-height: 1.35; }
+
+  .rz-card { padding: 1.1rem !important; }
+  .rz-visual { width: min(100%, 286px) !important; min-height: 286px !important; }
+  .orbit-a { --size: 126px !important; }
+  .orbit-b { --size: 178px !important; }
+  .orbit-c { --size: 226px !important; }
+  .orbit-token {
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+  }
+  .rz-orbit-core { width: 100px !important; height: 100px !important; }
+
+  .ecosystem-constellation { width: min(100%, 330px) !important; min-height: 350px !important; }
+  .ecosystem-node { width: 92px !important; }
+  .ecosystem-node-media { width: 66px !important; height: 66px !important; }
+  .ecosystem-node-insurance { width: 104px !important; }
+
+  .subhero-logo-cluster { width: min(100%, 310px) !important; height: 286px !important; }
+  .hero-token-logo { width: 94px !important; }
+  .hero-token-media { width: 72px !important; height: 72px !important; }
+  .hero-token-insurance { width: 118px !important; }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .magnetic,
+  [data-tilt],
+  .venture-card,
+  .compact-venture-card { transform: none !important; }
+  .portrait-halo { animation-duration: 32s; }
+}
