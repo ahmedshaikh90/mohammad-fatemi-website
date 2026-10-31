@@ -50,6 +50,7 @@ jobs:
           cp redesign-v11/theme-init.js dist/theme-init.js
           cp redesign-v11/site.js dist/site.js
           cp redesign-v11/terrain.js dist/terrain.js
+          sed -i 's/WhatsApp quick contact/Quick contact/g' dist/site-2.css
           node scripts/postbuild.mjs
           grep -q 'index, follow, max-image-preview:large' dist/index.html
           grep -q 'contact@mohfatemi.com' dist/contact.html
