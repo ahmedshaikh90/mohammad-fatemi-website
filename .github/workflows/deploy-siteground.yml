@@ -1,4 +1,4 @@
-name: Build and deploy to SiteGround
+name: Deploy exact Mohammad Fatemi redesign to SiteGround
 
 on:
   push:
@@ -13,33 +13,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
-
-      - name: Run SEO checks
-        run: npm run seo:check
-
-      - name: Build static website
-        run: npm run build
-
-      - name: Apply exact redesign v11
+      - name: Assemble exact static redesign
         run: |
-          set -e
+          set -euo pipefail
+          rm -rf dist
+          mkdir -p dist/img
+
+          # This is the static redesign package supplied for mohfatemi.com.
+          # No Astro/Node build is used in production anymore.
           cat redesign-v11/pages.b64.part* | base64 --decode > /tmp/redesign-pages.zip
           unzip -t /tmp/redesign-pages.zip
           unzip -o /tmp/redesign-pages.zip -d dist
+
           cp redesign-v11/site.css dist/site.css
           cp redesign-v11/site-1.css dist/site-1.css
           cp redesign-v11/site-2.css dist/site-2.css
@@ -50,11 +42,87 @@ jobs:
           cp redesign-v11/theme-init.js dist/theme-init.js
           cp redesign-v11/site.js dist/site.js
           cp redesign-v11/terrain.js dist/terrain.js
-          sed -i 's/WhatsApp quick contact/Quick contact/g' dist/site-2.css
-          node scripts/postbuild.mjs
-          grep -q 'index, follow, max-image-preview:large' dist/index.html
+          cp public/gtm-init.js dist/gtm-init.js
+          cp public/.htaccess dist/.htaccess
+
+          # Reuse the exact image blobs already stored in the repository.
+          cp public/assets/mohammad-fatemi-ecosystem-banner.webp dist/img/mohammad-fatemi-about.webp
+          cp public/assets/mohammad-fatemi-og.webp dist/img/mohammad-fatemi-og.webp
+          cp public/assets/token-mgc-logo-v2.webp dist/img/token-mgc-logo-v2.webp
+          cp public/assets/token-rz-logo-v2.webp dist/img/token-rz-logo-v2.webp
+          cp public/assets/token-rp1-logo-v2.webp dist/img/token-rp1-logo-v2.webp
+          cp public/assets/icon-64.webp dist/img/mf-icon-64.webp
+          cp public/assets/icon-192.webp dist/img/mf-icon-192.webp
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          dist = Path('dist')
+          marker = '<!-- build: redesign-v11-netlify-exact-2026-10-31 -->'
+
+          for page in ['index.html','about.html','expertise.html','ecosystem.html','contact.html']:
+              p = dist / page
+              s = p.read_text(encoding='utf-8')
+              s = s.replace(
+                  '<meta name="robots" content="noindex, nofollow">',
+                  '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">'
+              )
+              s = s.replace('img/mf-icon-64.png', 'img/mf-icon-64.webp')
+              s = s.replace('img/mf-icon-192.png', 'img/mf-icon-192.webp')
+              s = s.replace('https://mohfatemi.com/assets/token-mgc-logo-v2.webp', 'https://mohfatemi.com/img/token-mgc-logo-v2.webp')
+              s = s.replace('https://mohfatemi.com/assets/token-rz-logo-v2.webp', 'https://mohfatemi.com/img/token-rz-logo-v2.webp')
+              s = s.replace('https://mohfatemi.com/assets/token-rp1-logo-v2.webp', 'https://mohfatemi.com/img/token-rp1-logo-v2.webp')
+              s = s.replace('https://mohfatemi.com/assets/mohammad-fatemi-about.webp', 'https://mohfatemi.com/img/mohammad-fatemi-about.webp')
+              s = s.replace('https://mohfatemi.com/assets/mohammad-fatemi-og.webp', 'https://mohfatemi.com/img/mohammad-fatemi-og.webp')
+              s = s.replace('?v=16', '?v=17')
+              if marker not in s:
+                  s = s.replace('<meta name="theme-color"', marker + '\n  <meta name="theme-color"', 1)
+              p.write_text(s, encoding='utf-8')
+
+          # Email-only contact: remove dormant WhatsApp code and styling from the supplied package.
+          css = dist / 'site-2.css'
+          s = css.read_text(encoding='utf-8')
+          s = re.sub(
+              r'\n/\* WhatsApp quick contact \*/\n\.wa-float \{[^\n]*\}\n\.wa-float\.is-visible \{[^\n]*\}\n\.wa-float:hover \{[^\n]*\}\n\.wa-float svg \{[^\n]*\}\n',
+              '\n', s
+          )
+          s = re.sub(r'\n\s*\.wa-float \{[^\n]*\}\n\s*\.wa-float \.wa-text \{[^\n]*\}', '', s)
+          css.write_text(s, encoding='utf-8')
+
+          js = dist / 'site.js'
+          s = js.read_text(encoding='utf-8')
+          s = re.sub(
+              r'\n\s*// WhatsApp enquiry form \(same behaviour as the current site\)[\s\S]*?\n\s*}\n}\)\(\);\s*$',
+              '\n})();\n', s
+          )
+          js.write_text(s, encoding='utf-8')
+
+          (dist / 'robots.txt').write_text(
+              'User-agent: *\nAllow: /\n\nSitemap: https://mohfatemi.com/sitemap.xml\n',
+              encoding='utf-8'
+          )
+          (dist / 'sitemap.xml').write_text(
+              '<?xml version="1.0" encoding="UTF-8"?>\n'
+              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+              '  <url><loc>https://mohfatemi.com/</loc></url>\n'
+              '  <url><loc>https://mohfatemi.com/about.html</loc></url>\n'
+              '  <url><loc>https://mohfatemi.com/expertise.html</loc></url>\n'
+              '  <url><loc>https://mohfatemi.com/ecosystem.html</loc></url>\n'
+              '  <url><loc>https://mohfatemi.com/contact.html</loc></url>\n'
+              '</urlset>\n',
+              encoding='utf-8'
+          )
+          PY
+
+          grep -q 'redesign-v11-netlify-exact-2026-10-31' dist/index.html
           grep -q 'contact@mohfatemi.com' dist/contact.html
-          grep -q 'site.css?v=16' dist/index.html
+          grep -q 'site.css?v=17' dist/index.html
+          ! grep -RqiE 'whatsapp|wa\.me|api\.whatsapp\.com' dist --include='*.html' --include='*.js' --include='*.css'
+          test -f dist/img/mohammad-fatemi-about.webp
+          test -f dist/img/token-mgc-logo-v2.webp
+          test -f dist/img/token-rz-logo-v2.webp
+          test -f dist/img/token-rp1-logo-v2.webp
 
       - name: Configure SiteGround SSH
         env:
@@ -65,64 +133,46 @@ jobs:
           SSH_USER: ${{ secrets.SITEGROUND_SSH_USER }}
           DEPLOY_PATH: ${{ secrets.SITEGROUND_DEPLOY_PATH }}
         run: |
-          set -e
-
+          set -euo pipefail
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/siteground_key
           chmod 600 ~/.ssh/siteground_key
-
-          ssh-keygen \
-            -p \
-            -P "$SSH_PASSPHRASE" \
-            -N "" \
-            -f ~/.ssh/siteground_key
-
+          ssh-keygen -p -P "$SSH_PASSPHRASE" -N "" -f ~/.ssh/siteground_key
           ssh-keyscan -H -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+          ssh -i ~/.ssh/siteground_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "test -d '$DEPLOY_PATH' && echo 'SiteGround deployment directory confirmed'"
 
-          ssh \
-            -i ~/.ssh/siteground_key \
-            -p "$SSH_PORT" \
-            "$SSH_USER@$SSH_HOST" \
-            "echo 'SiteGround SSH connection successful'"
-
-          ssh \
-            -i ~/.ssh/siteground_key \
-            -p "$SSH_PORT" \
-            "$SSH_USER@$SSH_HOST" \
-            "test -d '$DEPLOY_PATH' && echo 'Deployment directory confirmed: $DEPLOY_PATH'"
-
-      - name: Deploy website to SiteGround
+      - name: Deploy exact static site to SiteGround
         env:
           SSH_HOST: ${{ secrets.SITEGROUND_SSH_HOST }}
           SSH_PORT: ${{ secrets.SITEGROUND_SSH_PORT }}
           SSH_USER: ${{ secrets.SITEGROUND_SSH_USER }}
           DEPLOY_PATH: ${{ secrets.SITEGROUND_DEPLOY_PATH }}
         run: |
-          set -e
-
+          set -euo pipefail
           rsync -az --delete \
             --exclude '.well-known/' \
             --exclude 'php_errorlog' \
             -e "ssh -i ~/.ssh/siteground_key -p $SSH_PORT" \
             dist/ "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/"
 
-      - name: Verify redesign on SiteGround public_html
+      - name: Verify exact site in SiteGround public_html
         env:
           SSH_HOST: ${{ secrets.SITEGROUND_SSH_HOST }}
           SSH_PORT: ${{ secrets.SITEGROUND_SSH_PORT }}
           SSH_USER: ${{ secrets.SITEGROUND_SSH_USER }}
           DEPLOY_PATH: ${{ secrets.SITEGROUND_DEPLOY_PATH }}
         run: |
-          set -e
-          ssh \
-            -i ~/.ssh/siteground_key \
-            -p "$SSH_PORT" \
-            "$SSH_USER@$SSH_HOST" \
-            "grep -q 'site.css?v=16' '$DEPLOY_PATH/index.html' && grep -q 'contact@mohfatemi.com' '$DEPLOY_PATH/contact.html' && echo 'REMOTE REDESIGN VERIFIED' && stat -c '%y %n' '$DEPLOY_PATH/index.html' && sha256sum '$DEPLOY_PATH/index.html'"
+          set -euo pipefail
+          ssh -i ~/.ssh/siteground_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
+            "grep -q 'redesign-v11-netlify-exact-2026-10-31' '$DEPLOY_PATH/index.html' && \
+             grep -q 'site.css?v=17' '$DEPLOY_PATH/index.html' && \
+             grep -q 'contact@mohfatemi.com' '$DEPLOY_PATH/contact.html' && \
+             test -f '$DEPLOY_PATH/img/mohammad-fatemi-about.webp' && \
+             test -f '$DEPLOY_PATH/img/token-rz-logo-v2.webp' && \
+             echo 'EXACT REDESIGN VERIFIED ON SITEGROUND' && \
+             stat -c '%y %n' '$DEPLOY_PATH/index.html'"
 
       - name: Deployment complete
-        run: |
-          echo "mohfatemi.com exact redesign v11 deployment completed and verified successfully."
+        run: echo 'mohfatemi.com exact static redesign deployed successfully.'
