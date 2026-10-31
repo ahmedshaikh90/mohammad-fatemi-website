@@ -1,0 +1,320 @@
+/*
+  Clean redesign layer — 2026-10-31
+  Inspired by the user-supplied redesign reference while preserving the current
+  mohfatemi.com brand, content, SEO, CMS and deployment architecture.
+*/
+
+:root {
+  --clean-card: rgba(255,255,255,.035);
+  --clean-card-light: rgba(255,255,255,.82);
+  --clean-border: rgba(214,179,106,.18);
+  --clean-shadow: 0 22px 60px rgba(0,0,0,.18);
+}
+
+/* Overall: quieter, cleaner, less decorative. */
+.section { padding: clamp(5.5rem, 8vw, 7.5rem) 0; }
+.hero-grid { opacity: .08; }
+.orb,
+.cursor-glow,
+.scroll-cue,
+.portrait-halo,
+.panel-rings { display: none !important; }
+
+.site-header.is-scrolled {
+  background: rgba(5,8,13,.92);
+  backdrop-filter: blur(16px) saturate(115%);
+  -webkit-backdrop-filter: blur(16px) saturate(115%);
+}
+
+/* Home hero: retain one strong portrait, remove decorative clutter. */
+.hero { background: linear-gradient(145deg, #05080d 0%, #08111d 62%, #05080d 100%); }
+.hero-layout { gap: clamp(2.5rem, 6vw, 5rem); }
+.hero-visual { width: min(100%, 500px); }
+.portrait-frame {
+  border-radius: 24px;
+  border-color: rgba(214,179,106,.22);
+  box-shadow: 0 28px 70px rgba(0,0,0,.36);
+}
+.portrait-frame::before { background: linear-gradient(180deg, transparent 70%, rgba(4,7,12,.86) 100%); }
+.portrait-frame img { aspect-ratio: 4 / 4.7; object-position: center 12%; filter: saturate(.92) contrast(1.02); }
+.floating-card { display: none !important; }
+.hero-tags li { background: transparent; }
+
+/* Remove repeated portrait blocks. Keep the hero portrait as the primary image. */
+.profile-editorial-single { display: none !important; }
+.ventures-hero-layout {
+  grid-template-columns: minmax(0, 1fr) !important;
+  margin-bottom: clamp(2.2rem, 4vw, 3.5rem);
+}
+.venture-intro-visual { display: none !important; }
+.venture-intro-copy { max-width: 920px; }
+.venture-intro-copy h2 { font-size: clamp(2.6rem, 5vw, 5rem); }
+
+/* Ecosystem page: use typography + token art, not another large portrait. */
+.ecosystem-image-section { display: none !important; }
+
+/* Cleaner cards across the site. */
+.venture-card,
+.compact-venture-card,
+.framework-card,
+.token-card,
+.expertise-panel,
+.note-card,
+.contact-form,
+.roadmap-step {
+  border-color: var(--clean-border) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.venture-card,
+.compact-venture-card,
+.framework-card,
+.expertise-panel,
+.roadmap-step {
+  background: var(--clean-card) !important;
+}
+.venture-card,
+.compact-venture-card,
+.framework-card,
+.token-card,
+.expertise-panel {
+  transform: none !important;
+}
+.venture-card:hover,
+.compact-venture-card:hover,
+.framework-card:hover,
+.token-card:hover,
+.expertise-panel:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 18px 42px rgba(0,0,0,.16) !important;
+}
+
+/* Homepage RZ block: convert moving orbit into three static project tiles. */
+.rz-card {
+  grid-template-columns: minmax(300px,.85fr) minmax(0,1.15fr);
+  min-height: 0;
+  padding: clamp(2rem, 5vw, 4rem);
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
+  box-shadow: none;
+}
+.rz-visual.rz-orbit-visual {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: .8rem;
+  width: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+.rz-visual .token-orbit {
+  position: static !important;
+  inset: auto !important;
+  width: auto !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  animation: none !important;
+  transform: none !important;
+}
+.rz-visual .token-orbit > a {
+  position: static !important;
+  inset: auto !important;
+  display: flex !important;
+  min-width: 0 !important;
+  min-height: 150px !important;
+  width: 100% !important;
+  height: auto !important;
+  padding: 1.1rem .8rem !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .7rem;
+  border: 1px solid rgba(214,179,106,.18) !important;
+  border-radius: 20px !important;
+  background: rgba(4,9,15,.62) !important;
+  animation: none !important;
+  transform: none !important;
+  text-align: center;
+}
+.rz-visual .rz-orbit-logo img {
+  width: 74px !important;
+  height: 74px !important;
+  max-width: 74px !important;
+  max-height: 74px !important;
+  object-fit: contain;
+  border-radius: 50%;
+}
+.rz-visual .rz-orbit-logo::after {
+  color: var(--silver);
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .03em;
+  line-height: 1.25;
+}
+.rz-orbit-logo-rz::after { content: "RZ Coin"; }
+.rz-orbit-logo-mgc::after { content: "Meta Games Coin"; }
+.rz-orbit-logo-rp1::after { content: "Ready Player One"; }
+.rz-orbit-core { display: none !important; }
+
+/* Ecosystem hero: static project links, no orbiting logos. */
+.subhero {
+  min-height: auto;
+  padding-bottom: 4rem;
+}
+.subhero-logo-cluster {
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: .9rem;
+  width: min(calc(100% - 40px), 960px) !important;
+  height: auto !important;
+  margin: 2.2rem auto 0 !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+.subhero-orbit,
+.subhero-token-core { display: none !important; }
+.hero-token-logo,
+.hero-token-rz,
+.hero-token-mgc,
+.hero-token-insurance {
+  position: static !important;
+  inset: auto !important;
+  display: flex !important;
+  width: auto !important;
+  min-height: 102px;
+  padding: .95rem 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  gap: .85rem;
+  border: 1px solid rgba(214,179,106,.18);
+  border-radius: 18px;
+  background: rgba(255,255,255,.025);
+  animation: none !important;
+  transform: none !important;
+  text-align: left;
+}
+.hero-token-media,
+.hero-token-media-insurance {
+  flex: 0 0 auto;
+  width: 68px !important;
+  height: 68px !important;
+  border-radius: 50% !important;
+}
+.hero-token-media img,
+.hero-token-media-insurance img {
+  width: 76% !important;
+  height: 76% !important;
+  max-width: 76% !important;
+  max-height: 76% !important;
+  object-fit: contain;
+}
+.hero-token-logo small {
+  margin: 0;
+  color: var(--silver);
+  font-size: .72rem;
+  line-height: 1.3;
+  text-align: left;
+}
+
+/* Token explanations: clean, static, image-first cards. */
+.official-token-grid {
+  grid-template-columns: repeat(3, minmax(0,1fr)) !important;
+  gap: 1rem !important;
+}
+.official-token-card {
+  grid-template-rows: 160px 1fr !important;
+  overflow: hidden;
+  border-radius: 22px !important;
+  background: #fff !important;
+}
+.token-logo-panel {
+  min-height: 160px !important;
+  padding: 1rem !important;
+  background: linear-gradient(145deg, #07101b, #0c1725) !important;
+}
+.token-logo-panel::before,
+.token-logo-panel::after { display: none !important; }
+.token-logo-panel img,
+.token-logo-panel-square img {
+  width: 96px !important;
+  height: 96px !important;
+  max-width: 96px !important;
+  max-height: 96px !important;
+  transform: none !important;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.28));
+}
+.token-card-content { padding: 1.4rem !important; }
+.token-card-content h3 { margin-bottom: .7rem; }
+.token-card-content p:not(.card-label) { font-size: .96rem; line-height: 1.65; }
+
+/* AI section: remove decorative orbit graphic, keep the useful explanation. */
+.ai-layout { grid-template-columns: minmax(0,900px) !important; justify-content: center; }
+.ai-visual { display: none !important; }
+
+/* Keep motion restrained and purposeful. */
+.marquee-track { animation-duration: 48s; }
+.text-gradient { animation-duration: 9s; }
+.logoFloat,
+.heroLogoFloat { animation-duration: 12s; }
+
+@media (max-width: 900px) {
+  .rz-card { grid-template-columns: 1fr; }
+  .rz-visual.rz-orbit-visual { grid-template-columns: repeat(3, minmax(0,1fr)); order: 2; }
+  .subhero-logo-cluster { grid-template-columns: 1fr; width: min(calc(100% - 28px), 560px) !important; }
+  .hero-token-logo { min-height: 88px; }
+  .official-token-grid { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 620px) {
+  .section { padding: 4.2rem 0; }
+  .hero { padding-top: 6.7rem; }
+  .hero-emblem { width: min(210px, 65vw); }
+  .hero h1 { font-size: clamp(2.35rem, 10.8vw, 3.35rem); }
+  .hero-tags { display: none; }
+  .marquee-band { display: none; }
+  .portrait-frame { border-radius: 20px; }
+  .portrait-frame img { aspect-ratio: 4 / 4.8; object-position: center 10%; }
+
+  .rz-card { padding: 1.25rem !important; border-radius: 22px; }
+  .rz-visual.rz-orbit-visual { grid-template-columns: 1fr !important; gap: .65rem; }
+  .rz-visual .token-orbit > a {
+    min-height: 82px !important;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: .75rem .9rem !important;
+  }
+  .rz-visual .rz-orbit-logo img {
+    width: 54px !important;
+    height: 54px !important;
+    max-width: 54px !important;
+    max-height: 54px !important;
+  }
+  .rz-visual .rz-orbit-logo::after { font-size: .75rem; }
+
+  .subhero-logo-cluster { margin-top: 1.5rem !important; }
+  .hero-token-logo { min-height: 80px; padding: .72rem .82rem; }
+  .hero-token-media,
+  .hero-token-media-insurance { width: 58px !important; height: 58px !important; }
+
+  .official-token-card { grid-template-rows: 140px 1fr !important; }
+  .token-logo-panel { min-height: 140px !important; }
+  .token-logo-panel img,
+  .token-logo-panel-square img {
+    width: 86px !important;
+    height: 86px !important;
+    max-width: 86px !important;
+    max-height: 86px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .text-gradient { animation: none !important; }
+}
