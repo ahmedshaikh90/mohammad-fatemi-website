@@ -34,6 +34,26 @@ jobs:
       - name: Build static website
         run: npm run build
 
+      - name: Apply exact redesign v11
+        run: |
+          set -e
+          cat redesign-v11/pages.b64.part* | base64 --decode > /tmp/redesign-pages.zip
+          unzip -t /tmp/redesign-pages.zip
+          unzip -o /tmp/redesign-pages.zip -d dist
+          cp redesign-v11/site.css dist/site.css
+          cp redesign-v11/site-1.css dist/site-1.css
+          cp redesign-v11/site-2.css dist/site-2.css
+          cp redesign-v11/site-3.css dist/site-3.css
+          cp redesign-v11/site-4.css dist/site-4.css
+          cp redesign-v11/site-5.css dist/site-5.css
+          cp redesign-v11/fonts.css dist/fonts.css
+          cp redesign-v11/theme-init.js dist/theme-init.js
+          cp redesign-v11/site.js dist/site.js
+          cp redesign-v11/terrain.js dist/terrain.js
+          node scripts/postbuild.mjs
+          grep -q 'index, follow, max-image-preview:large' dist/index.html
+          grep -q 'contact@mohfatemi.com' dist/contact.html
+
       - name: Configure SiteGround SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SITEGROUND_SSH_PRIVATE_KEY }}
@@ -51,8 +71,6 @@ jobs:
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/siteground_key
           chmod 600 ~/.ssh/siteground_key
 
-          # Remove the passphrase only on this temporary GitHub runner.
-          # The original SiteGround key remains password protected.
           ssh-keygen \
             -p \
             -P "$SSH_PASSPHRASE" \
@@ -62,14 +80,12 @@ jobs:
           ssh-keyscan -H -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
-          # Confirm that GitHub can connect to SiteGround.
           ssh \
             -i ~/.ssh/siteground_key \
             -p "$SSH_PORT" \
             "$SSH_USER@$SSH_HOST" \
             "echo 'SiteGround SSH connection successful'"
 
-          # Confirm that the deployment directory actually exists.
           ssh \
             -i ~/.ssh/siteground_key \
             -p "$SSH_PORT" \
@@ -93,4 +109,4 @@ jobs:
 
       - name: Deployment complete
         run: |
-          echo "mohfatemi.com deployment completed successfully."
+          echo "mohfatemi.com exact redesign v11 deployment completed successfully."
