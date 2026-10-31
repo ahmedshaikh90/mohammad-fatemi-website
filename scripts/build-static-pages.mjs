@@ -53,6 +53,14 @@ function addIntegrations(html) {
   return html;
 }
 
+function addMobileAssets(html) {
+  if (!html.includes('mobile-fixes.css')) {
+    html = html.replace('</head>', '  <link rel="stylesheet" href="mobile-fixes.css?v=20261031-mobile1">\n</head>');
+  }
+  html = html.replace(/<script src="script\.js(?:\?[^\"]*)?" defer><\/script>/i, '<script src="script.js?v=20261031-mobile1" defer></script>');
+  return html;
+}
+
 function socialLink(url, icon, label) {
   if (!url) return '';
   const rel = icon === 'linkedin' ? 'noopener noreferrer me' : 'noopener noreferrer';
@@ -160,6 +168,7 @@ for (const [name, cfg] of [['index', site.home], ['ecosystem', site.ecosystem]])
     const media = mediaEmbedsSection();
     if (media) html = html.replace(/\n\s*<section id="contact"/, `${media}\n    <section id="contact"`);
   }
+  html = addMobileAssets(html);
   html = addIntegrations(html);
   await fs.writeFile(path.join(root, `public/${name}.html`), html);
 }
