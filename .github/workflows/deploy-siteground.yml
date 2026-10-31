@@ -54,6 +54,7 @@ jobs:
           node scripts/postbuild.mjs
           grep -q 'index, follow, max-image-preview:large' dist/index.html
           grep -q 'contact@mohfatemi.com' dist/contact.html
+          grep -q 'site.css?v=16' dist/index.html
 
       - name: Configure SiteGround SSH
         env:
@@ -108,6 +109,20 @@ jobs:
             -e "ssh -i ~/.ssh/siteground_key -p $SSH_PORT" \
             dist/ "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/"
 
+      - name: Verify redesign on SiteGround public_html
+        env:
+          SSH_HOST: ${{ secrets.SITEGROUND_SSH_HOST }}
+          SSH_PORT: ${{ secrets.SITEGROUND_SSH_PORT }}
+          SSH_USER: ${{ secrets.SITEGROUND_SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.SITEGROUND_DEPLOY_PATH }}
+        run: |
+          set -e
+          ssh \
+            -i ~/.ssh/siteground_key \
+            -p "$SSH_PORT" \
+            "$SSH_USER@$SSH_HOST" \
+            "grep -q 'site.css?v=16' '$DEPLOY_PATH/index.html' && grep -q 'contact@mohfatemi.com' '$DEPLOY_PATH/contact.html' && echo 'REMOTE REDESIGN VERIFIED' && stat -c '%y %n' '$DEPLOY_PATH/index.html' && sha256sum '$DEPLOY_PATH/index.html'"
+
       - name: Deployment complete
         run: |
-          echo "mohfatemi.com exact redesign v11 deployment completed successfully."
+          echo "mohfatemi.com exact redesign v11 deployment completed and verified successfully."
