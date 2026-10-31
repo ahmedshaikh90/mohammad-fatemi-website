@@ -51,6 +51,7 @@ const jsonLd = type === 'article' ? {
   <link rel="alternate" type="application/rss+xml" title={`${site.siteName} RSS`} href="/rss.xml" />
   <link rel="stylesheet" href="/styles.css?v=20261004-2" />
   <link rel="stylesheet" href="/mobile-fixes.css?v=20261031-mobile1" />
+  <link rel="stylesheet" href="/clean-redesign.css?v=20261031-clean1" />
   {(site.integrations?.googleAnalyticsId || site.integrations?.googleAdsId) && <script async src={`https://www.googletagmanager.com/gtag/js?id=${site.integrations.googleAnalyticsId || site.integrations.googleAdsId}`}></script>}
   {site.integrations?.googleAnalyticsId && <script src="/analytics-init.js" data-ga-id={site.integrations.googleAnalyticsId} defer></script>}
   {site.integrations?.googleAdsId && <script src="/google-ads-init.js" data-google-ads-id={site.integrations.googleAdsId} defer></script>}
